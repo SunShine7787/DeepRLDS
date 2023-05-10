@@ -94,15 +94,6 @@ def evaluate_batch_mol(org_mols, batch_mol, epoch, decodings):
                 mw = MolDescriptors.CalcExactMolWt(mol)
                 tpsa = Descriptors.TPSA(mol)
                 # # 计算相似性
-                # # 计算相似性
-                # m1 = Chem.MolFromMol2File('/home/developer/wq/3.6/sdy-14.mol2')
-                # m2 = Chem.MolFromMol2File('/home/developer/wq/3.6/sdy-95.mol2')
-                # ms = [m1, m2, Chem.Mol(mol)]
-                # fps = [Chem.RDKFingerprint(x) for x in ms]
-                # sim1 = DataStructs.FingerprintSimilarity(fps[0], fps[2])
-                # sim2 = DataStructs.FingerprintSimilarity(fps[1], fps[2])
-                # if(sim1 >= 0.8) or (sim2 >= 0.8):
-                #     print("target molecule is {},sim1 is{},sim2 is {}".format(str(Chem.MolToSmiles(mol))),sim1,sim2)
                 frs[i][0] = True
                 frs[i][1]=400 < mw < 605
                 frs[i][2]=4 < clogp < 7
@@ -122,16 +113,12 @@ def evaluate_batch_mol(org_mols, batch_mol, epoch, decodings):
                 frs[i] = [False] * FEATURES
         else:
             frs[i] = [False] * FEATURES
-    #
-    # # print("rewards1:")
-    # # print(frs)
+
     # # 调用对接接口
     if len(pdbqt_list) == 0:
         # print('len(mollist) == 0'+str(len(evaluated_mols)))
         return frs
-    #result_list_str = Client(filename)
-    # print(result_list_str)ss
-    # print(type(result_list_str))
+  
     # 获取对接结果，拼接成模型输入
     # 将获得的结果转换成字典
     # 死循环，只有当try到正确结果时，才会退出循环，否则将等待6s后重新执行，同时将这次的中断输出到日志
@@ -185,11 +172,7 @@ def evaluate_batch_mol(org_mols, batch_mol, epoch, decodings):
         # print("key="+key)
         value = [float(strs[2]), float(strs[3]), float(strs[4])]
         result_key_value[key] = value
-        # print("key")
-        # print(key)
-        # print("value")
-        # print(value)
-    ##拼接结果为感知机的输入
+        ##拼接结果为感知机的输入
     PDBpath = rootPath + '/vina/ledock_in.list'
     print(len(result_key_value))
     for i, key in zip(pdbqt_list, keylist):
@@ -209,12 +192,7 @@ def evaluate_batch_mol(org_mols, batch_mol, epoch, decodings):
                 X.append(val[1])
                 X.append(val[2])
                 # print(len(X))
-            # print("i:"+str(i))
-            # print(X)
-        # 预测activity
-        # print(len(X))
-        # print(len(W))
-        # print(len(b[0]))
+            
         print("activity:"+str(np.dot(X, W) + b[0]))
         activity =((np.dot(X, W) + b[0]) > 0)
         frs[i][4] = activity
@@ -229,34 +207,6 @@ def evaluate_batch_mol(org_mols, batch_mol, epoch, decodings):
     # print("final_frs")
     # print(frs)
     return frs
-
-
-'''
-#**# Same as above but decodes and check if a cached value could be used.
-def evaluate_mol(fs, epoch, decodings):
-
-    #print("This is evaluate_mol.....")
-
-    global evaluated_mols
-
-    key = get_key(fs)
-
-    if key in evaluated_mols:
-        return evaluated_mols[key][0]
-
-    try:
-        mol = decode(fs, decodings)
-        ret_val = evaluate_chem_mol(mol)
-    except:
-        ret_val = [False] * 5
-
-    evaluated_mols[key] = (np.array(ret_val), epoch)
-
-    return np.array(ret_val)
-'''
-
-
-
 
 # Get initial distribution of rewards among lead molecules
 def get_init_dist( X, decodings):
@@ -279,10 +229,4 @@ def clean_good(X, decodings):
     return np.asarray(X), frs
 
 
-'''
-# 调用测试
-if __name__ == '__main__':
-    batch_mol = np.array([[[1, 1, 0, 1, 1, 0, 1, 0,],[1, 0, 1, 0, 1, 1, 0, 1,],[1, 1, 0, 1, 1, 1, 1, 0,],[1, 0, 1, 1, 0, 0, 1, 1,],[1, 0, 1, 0, 1, 1, 1, 1,],[1, 1, 0, 0, 0, 1, 0, 1,],[1, 0, 1, 0, 1, 0, 1, 1,],[1, 1, 1, 1, 1, 0, 0, 1,],[0, 0, 0, 0, 0, 0, 0, 0,],[0, 0, 0, 0, 0, 0, 0, 0,],[0, 0, 0, 0, 0, 0, 0, 0,],[0, 0, 0, 0, 0, 0, 0, 0,]],[[1, 1, 0, 1, 1, 0, 1, 0,],[1, 0, 1, 0, 1, 1, 0, 1,],[1, 1, 0, 1, 1, 1, 1, 0,],[1, 0, 1, 1, 1, 0, 1, 1,],[1, 0, 1, 1, 1, 1, 1, 1,],[1, 1, 0, 0, 0, 1, 0, 0,],[1, 0, 1, 0, 1, 1, 1, 1,],[1, 1, 0, 1, 1, 1, 1, 0,],[1, 1, 1, 1, 0, 0, 0, 0,],[0, 0, 0, 0, 0, 0, 0, 0,],[0, 0, 0, 0, 0, 0, 0, 0,],[0, 0, 0, 0, 0, 0, 0, 0,]]])
-    decoding = {'0000000': 'O=C1N[C@@H]([Lu])C(=O)N[C@H]1[Yb]', '0000001': 'O=C1OCCN1[Yb]', '0000010': 'C=C1NC(=O)[C@@H]([Yb])NC1=O', '0000011': 'C=C1NC(=O)[C@H]([Yb])NC1=O', '0001000': 'CS(=O)(=O)N([Yb])/C(=C\\[Lu])SC#N', '0001001': 'CS(=O)(=O)N([Yb])/C(=C\\[Lu])[Se]C#N', '0001100': 'CS(=O)(=O)N([Yb])[Lu]', '0001101': 'O=S(=O)([Lu])N([Yb])[Ta]', '0001110': 'CN([Yb])S(=O)(=O)[Lu]', '0001111': 'CN([Yb])S(C)(=O)=O', '0100000': '[Yb]c1oc2c(c1[Lu])CCCC2', '0100010': '[Yb]C1CCCCC1', '0100011': '[Yb][C@@H]1C[C@H]([Lu])CC[C@H]1[Ta]', '0100100': '[Yb]c1ccsc1', '0100101': '[Yb]c1cccs1', '0100110': '[Yb]c1scc([Lu])c1[Ta]', '0100111': '[Yb]c1occ([Lu])c1[Ta]', '0101000': '[Yb]c1cccc([Lu])c1', '0101001': '[Yb]c1ccc([Ta])c([Lu])c1', '0101010': '[Yb]c1cccnc1', '0101011': '[Yb]c1ccccc1', '0101100': '[Yb]c1ccccc1[Lu]', '0101101': '[Yb]c1ccc([Lu])c([Ta])c1', '0101110': '[Yb]c1ccc([Lu])cc1[Ta]', '0101111': '[Yb]c1ccc([Lu])cc1', '0110000': '[Yb]c1cc([Lu])ccn1', '0110001': '[Yb]c1ncc([Lu])o1', '0110010': '[Yb]C1CC([Lu])=NN1', '0110011': '[Yb]C1CC([Ta])=NN1[Lu]', '0110100': '[Yb]n1ccc2ccccc21', '0110101': '[Yb]c1ccc2c(c1)OCO2', '0110110': '[Yb]c1cc2ccccc2o1', '0110111': '[Yb]c1nc2ccccc2s1', '0111000': '[Yb]c1cnc2ccccc2c1', '0111001': '[Yb]c1c[nH]c2ccccc12', '0111010': '[Yb]c1ccc2ccccc2c1', '0111011': '[Yb]c1ccc2cc([Lu])ccc2c1', '0111100': '[Yb]c1c([Ta])ccc2c1ccn2[Lu]', '0111101': '[Yb]c1cc([Ta])cc2c1ccn2[Lu]', '0111110': '[Yb]c1cccc2c1c([Ta])cn2[Lu]', '0111111': '[Yb]c1cccc2c1ccn2[Lu]', '1000000': 'O=P([Yb])(OC[Lu])OC[Ta]', '1000001': 'COP(=O)([Yb])OC', '1000010': 'CC(C)OP(=O)([Yb])OC(C)C', '1000011': 'CCOP(=O)([Yb])OCC', '1000100': '[Yb]SC[Lu]', '1000101': '[Yb]O[Lu]', '1000110': '[Yb]OC[Lu]', '1000111': '[Yb]C[Lu]', '1010000': 'O=[N+]([O-])[Yb]', '1010001': 'Br[Yb]', '1010010': 'C=CC(C)(C)C(=O)[Yb]', '1010011': 'CC(C)(C)P(=O)([Yb])C(C)(C)C', '1010100': 'O=C[Yb]', '1010101': 'COCC[Yb]', '1010110': 'N#C[Yb]', '1010111': 'N#CC[Yb]', '1011000': 'I[Yb]', '1011001': 'F[Yb]', '1011010': 'O[Yb]', '1011011': 'C[Yb]', '1011100': 'CC[Yb]', '1011101': 'Cl[Yb]', '1011110': 'CCO[Yb]', '1011111': 'CO[Yb]', '1100000': '[Yb]C1=NN([Ta])C([Lu])C1', '1100001': 'CC(C[Yb])S[Lu]', '1100010': 'FC(S[Lu])=C([Yb])[Ta]', '1100011': 'F/C(=C\\[Yb])S[Lu]', '1100100': '[Yb]C=C(S[Lu])S[Ta]', '1100101': 'O=S(=O)([Lu])C(F)C[Yb]', '1100110': 'O=S(=O)([Lu])/C([Ta])=C/[Yb]', '1100111': 'O=S(=O)([Lu])/C(F)=C/[Yb]', '1101000': 'CC(C)C[Yb]', '1101001': 'CC(C)(C)[Yb]', '1101010': 'FC(F)(F)O[Yb]', '1101011': 'FC(F)(F)[Yb]', '1101100': 'OCCCCCCS[Yb]', '1101101': 'CCC(C)[Yb]', '1101110': '[Yb]C1CC1', '1101111': 'CC(C)[Yb]', '1110000': 'O=C1CSC([Yb])=N1', '1110001': 'CCOC(=O)/C(F)=C(/[Yb])C(=O)[Lu]', '1110010': 'O=C([Lu])/C=C/[Yb]', '1110011': 'O=C([Lu])CS[Yb]', '1110100': 'O=C(CS[Yb])O[Lu]', '1110101': 'O=C([Yb])O[Lu]', '1110110': 'COC(=O)CC[Yb]', '1110111': 'COC(=O)CS[Yb]', '1111000': 'CCCCOC(=O)[Yb]', '1111001': 'CS(=O)(=O)[Yb]', '1111010': 'CCCC(=O)[Yb]', '1111011': 'CCOC(=O)[Yb]', '1111100': 'CC(=O)[Yb]', '1111101': 'NC(=S)[Yb]', '1111110': 'CCC(=O)[Yb]', '1111111': 'COC(=O)[Yb]'}
-    evaluate_batch_mol(batch_mol,1,decoding)
-'''
+
