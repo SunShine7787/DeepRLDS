@@ -237,12 +237,8 @@ def main():
 
     # TODO 测试用地址
     # receptorpath = '/Volumes/data/home/Developer/workspace/centling/code/deep/ledock/Mpro/Mpro'
-
-    # TODO 正式地址 高研院
-    receptorpath = '/lustre/home/weizhiqiang/dev/zyd/20210420/Mpro'
-
     # TODO 正式地址 即墨超算
-    # receptorpath = '/home/csywz/deep/Mpro'
+    receptorpath = '/home/csywz/deep/Mpro'
 
     logging.info('受体文件目录：' + receptorpath)
 
@@ -313,11 +309,8 @@ def main():
         qsunName= os.path.basename(qsub)
         os.chdir(workPath)
 
-        # TODO 高研院
-        qsub_command = '/usr/bin/qsub ' + qsunName
-
         # TODO 即墨超算
-        # qsub_command = '/home/SystemSoftware/tsce/torque6/bin/qsub ' + qsunName
+        qsub_command = '/home/SystemSoftware/tsce/torque6/bin/qsub ' + qsunName
 
         result = os.system(qsub_command)
         logging.info('提交任务：'+qsub)
