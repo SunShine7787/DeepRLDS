@@ -37,13 +37,13 @@ def main(fragment_file, lead_file):
     logging.info("Saved decodings")
     
     lead_mols = np.asarray(fragment_mols[-len(lead_mols):])[used_mols[-len(lead_mols):]]
-    # #print(lead_mols) <rdkit.Chem.rdchem.Mol object at 0x0000022C01F30490>   47个
+    # #print(lead_mols) <rdkit.Chem.rdchem.Mol object at 0x0000022C01F30490>   
     print(len(lead_mols))
     X = encode_list(lead_mols, encodings)
     print(X)
     print(X.shape)
     # logging.info("Building models")
-    # #print(X.shape[0]) 47         print(X.shape[1])  最大12个片段     print(X.shape[2])  8 （一个片段为8位）
+    # #print(X.shape[0])       
     print(X.shape[1:])
     actor, critic = build_models(X.shape[1:])
     # print(actor.summary())
@@ -61,8 +61,8 @@ def main(fragment_file, lead_file):
 
 if __name__ == "__main__":
 
-    fragment_file = "Data/molecules10550.smi"
-    lead_file = "Data/dopamineD4props175.csv"
+    fragment_file = "Data/molecules.smi"
+    lead_file = "Data/dopamineD4props.csv"
 
 
     if len(sys.argv) > 1:
