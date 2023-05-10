@@ -19,11 +19,8 @@ import paramiko
 
 # 校验目前队列状态
 def checkJobStat(sshClient, jobId):
-    # TODO 高研院
-    checkJobStatCommand = "/usr/bin/qstat " + jobId
-
-    # TODO 即墨超算
-    # checkJobStatCommand = "/home/SystemSoftware/tsce/torque6/bin/qstat " + jobId
+    # TODO 超算
+    checkJobStatCommand = "/home/SystemSoftware/tsce/torque6/bin/qstat " + jobId
 
     ststus = True
     try:
@@ -305,27 +302,14 @@ def main(ligandListFilePath):
     print('=' * 67)
     print('=' * 10, '该方法仅供测试使用！请调整好相关参数,请不要用于生产环境', '=' * 10)
     print('=' * 67)
-    # 高研院
+
     sftpClient(
         _ligandListFilePath=ligandListFilePath,
-        _remotepath='/lustre/home/weizhiqiang/',
-        _hostname='10.130.2.222',
-        _username='weizhiqiang',
-        _passwd='IAOS1234'
+        _remotepath='/lustre/home/xxxxxx/',
+        _hostname='xx.xxx.x.xxx',
+        _username='xxxxxx',
+        _passwd='xxxxx'
     )
-
-    # 即墨超算
-    # sftpClient(
-    #     _ligandListFilePath=ligandListFilePath,
-    #     _remotepath='/home/csywz/',
-    #     _hostname='11.11.100.10',
-    #     _username='csywz',
-    #     _passwd='csywz@20131218'
-    # )
-
-    # sftpClient(
-    #     _ligandListFilePath=ligandListFilePath
-    # )
 
 
 # 调用测试
