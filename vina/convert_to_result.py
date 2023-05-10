@@ -1,10 +1,4 @@
 # -*- coding: utf-8 -*-
-# @Time    : 2023/3/15 1:47
-# @Author  : hxt
-# @FileName: convert_to_result.py
-# @Software: PyCharm
-#
-# 2vth_pro.pdbqt&&&&DB00246.pdbqt
 # 第一个是靶点，第二个是配体
 # 一个文件中装有一个靶点对应1000个配体的对接结果
 # 当前的情况是2*1000，但最后我们应该1000*2
