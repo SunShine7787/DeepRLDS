@@ -39,10 +39,13 @@ conda install -c conda-forge openbabel
 pip install -U mpi4py
 
 python run.py
+
 It is also possible to run the program on a custom set of lead molecules and/or fragments.
 
 python run.py fragment_molecules.smi lead_file.smi
+
 Molecules that are genertated during the process can be vied by running:
 
 python Show_Epoch.py n
+
 where n is the epoch that should be viewed. This shows two columns of molecules. The first column contains the original lead molecule, while the second column contains modified molecules. Any global parameters can be changed by changing them in the file "Modules/global_parameters.py"
